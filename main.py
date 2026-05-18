@@ -32,7 +32,6 @@ LORCANA_PAGE_ID = os.getenv("LORCANA_PAGE_ID")
 # ─────────────────────────────────────────────────────────────────────────────
 
 LORCAST_API      = "https://api.lorcast.com/v0"
-CARDMARKET_BASE  = "https://www.cardmarket.com/en/Lorcana/Products/Singles"
 
 notion = Client(auth=NOTION_TOKEN)
 
@@ -131,7 +130,7 @@ def fetch_set_cards(set_number):
 
 def build_card_entry(num, card):
     if not card:
-        return {"number": num, "name": "Card not found", "rarity": "?", "usd": None, "usd_foil": None, "cardmarket_id": None, "image_url": None}
+        return {"number": num, "name": "Card not found", "rarity": "?", "usd": None, "usd_foil": None, "image_url": None}
 
     full_name = card.get("name", "Unknown")
     version = card.get("version")
@@ -147,7 +146,6 @@ def build_card_entry(num, card):
         "rarity": card.get("rarity", "Unknown"),
         "usd": prices.get("usd"),
         "usd_foil": prices.get("usd_foil"),
-        "cardmarket_id": card.get("cardmarket_id"),
         "image_url": image_url,
     }
 
@@ -194,13 +192,6 @@ def card_blocks(cards):
     for card in cards:
         line = format_card_line(card)
         rich_text = [{"type": "text", "text": {"content": line}}]
-
-        if card.get("cardmarket_id"):
-            cm_url = f"{CARDMARKET_BASE}/{card['cardmarket_id']}"
-            rich_text.append({
-                "type": "text",
-                "text": {"content": "  🔗 Cardmarket", "link": {"url": cm_url}},
-            })
 
         blocks.append({
             "object": "block",
